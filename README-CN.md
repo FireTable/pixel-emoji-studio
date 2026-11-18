@@ -1,10 +1,10 @@
-# Emoji Studio
+# Pixel Emoji Studio
 
-输入一句描述，在浏览器内生成 16×16 的透明像素表情。Emoji Studio 是 FireTable 基于 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 制作的非商业改版。
+输入一句描述，在浏览器内生成 16×16 的透明像素表情。Pixel Emoji Studio 是 FireTable 基于 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 制作的非商业改版。
 
 [在线体验](https://emoji.firetable.tech/zh/) · [English](README.md) · [移动端截图](screenshots/mobile.png)
 
-![Emoji Studio 桌面工作区的火焰描边对比](screenshots/desktop.png)
+![Pixel Emoji Studio 桌面工作区的火焰描边对比](screenshots/desktop.png)
 
 ## 功能
 
@@ -16,8 +16,8 @@
 ## 本地运行
 
 ```sh
-git clone https://github.com/FireTable/emoji-studio.git
-cd emoji-studio
+git clone https://github.com/FireTable/pixel-emoji-studio.git
+cd pixel-emoji-studio
 npm ci
 npm run dev
 ```
@@ -32,7 +32,7 @@ npm run dev
 
 ## 鸣谢与许可
 
-Emoji Studio 以 Caleb Fahlgren 的 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 页面源码为基础，沿用了聊天预览的设计，以及部分示例图和背景像素小图。FireTable 调整了工作区，增加了描边修复、历史记录和显示设置。
+Pixel Emoji Studio 以 Caleb Fahlgren 的 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 页面源码为基础，沿用了聊天预览的设计，以及部分示例图和背景像素小图。FireTable 调整了工作区，增加了描边修复、历史记录和显示设置。
 
 原版应用和 Jagrat Patel（TheJagStudio）训练的 [Tessera-small 权重](https://huggingface.co/thejagstudio/tessera-small#license) 采用 [CC BY-NC 4.0](LICENSE)。本站的改版和再分发的 Tessera 分片沿用该许可。商业使用 Tessera 需向模型作者另行取得授权。
 

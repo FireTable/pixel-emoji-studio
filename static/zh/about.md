@@ -1,8 +1,8 @@
-# Emoji Studio
+# Pixel Emoji Studio
 
-Emoji Studio 是免费的非商业网页工具。输入一句描述，可以在浏览器中生成四张 16×16 的透明像素表情，再选一张复制或下载为透明 PNG。
+Pixel Emoji Studio 是免费的非商业网页工具。输入一句描述，可以在浏览器中生成四张 16×16 的透明像素表情，再选一张复制或下载为透明 PNG。
 
-## Emoji Studio 增加了什么
+## Pixel Emoji Studio 增加了什么
 
 - **ONNX 模型拆包与并行下载。** 原版的 Tessera-small 和 CLIP 两个 ONNX 文件共拆成 8 个分片，每片最多 16 MiB。浏览器从 CDN 同时请求最多 4 片，再在内存里拼回两个模型。首次下载约 115 MB，之后可以复用浏览器缓存。
 - **可选描边修复。** 修补外轮廓的小缺口，可拖动滑块比较原图和修复后的效果。复制和导出按当前修复开关取图。
@@ -12,8 +12,8 @@ Emoji Studio 是免费的非商业网页工具。输入一句描述，可以在�
 
 ## 本地推理与鸣谢
 
-Emoji Studio 以 Caleb Fahlgren 的 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 页面源码为基础，沿用了聊天预览的设计，以及部分示例图和背景像素小图。本站改版和 Jagrat Patel 的 [Tessera-small 权重](https://huggingface.co/thejagstudio/tessera-small) 沿用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)。
+Pixel Emoji Studio 以 Caleb Fahlgren 的 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 页面源码为基础，沿用了聊天预览的设计，以及部分示例图和背景像素小图。本站改版和 Jagrat Patel 的 [Tessera-small 权重](https://huggingface.co/thejagstudio/tessera-small) 沿用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)。
 
 ONNX Runtime Web 通过 WebGPU 使用访客自己的 GPU，也可通过 WebAssembly 使用 CPU。提示词、生成结果和历史都留在浏览器中。
 
-[打开 Emoji Studio](https://emoji.firetable.tech/zh/) · [English](https://emoji.firetable.tech/about.md) · [源代码](https://github.com/FireTable/emoji-studio)
+[打开 Pixel Emoji Studio](https://emoji.firetable.tech/zh/) · [English](https://emoji.firetable.tech/about.md) · [源代码](https://github.com/FireTable/pixel-emoji-studio)

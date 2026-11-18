@@ -1,8 +1,8 @@
-# Emoji Studio
+# Pixel Emoji Studio
 
-Emoji Studio is a free, non-commercial web app that makes transparent 16×16 pixel emoji from text. Enter a short description to generate four variants, choose one, then copy the image or download a transparent PNG.
+Pixel Emoji Studio is a free, non-commercial web app that makes transparent 16×16 pixel emoji from text. Enter a short description to generate four variants, choose one, then copy the image or download a transparent PNG.
 
-## What Emoji Studio adds
+## What Pixel Emoji Studio adds
 
 - **Model downloads.** The original Tessera-small and CLIP ONNX files are split into eight parts, each at most 16 MiB. The browser fetches up to four parts in parallel from the CDN and reassembles the two models in memory. The first visit downloads about 115 MB. Later visits reuse the cached parts while they remain available.
 - **Outline repair.** An optional switch fills small gaps in the outer outline. Drag the comparison slider to inspect the original and repaired images. Copy and export use the switch's current setting.
@@ -12,8 +12,8 @@ Emoji Studio is a free, non-commercial web app that makes transparent 16×16 pix
 
 ## Local inference and credits
 
-Emoji Studio builds on the page code of Caleb Fahlgren’s [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) and reuses its chat preview design and some example images and background sprites. The adaptation and Jagrat Patel’s [Tessera-small weights](https://huggingface.co/thejagstudio/tessera-small) follow [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+Pixel Emoji Studio builds on the page code of Caleb Fahlgren’s [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) and reuses its chat preview design and some example images and background sprites. The adaptation and Jagrat Patel’s [Tessera-small weights](https://huggingface.co/thejagstudio/tessera-small) follow [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
 
 ONNX Runtime Web runs on the visitor’s GPU through WebGPU or on their CPU through WebAssembly. Prompts, generated images, and history stay in the browser.
 
-[Open Emoji Studio](https://emoji.firetable.tech/) · [简体中文](https://emoji.firetable.tech/zh/about.md) · [Source code](https://github.com/FireTable/emoji-studio)
+[Open Pixel Emoji Studio](https://emoji.firetable.tech/) · [简体中文](https://emoji.firetable.tech/zh/about.md) · [Source code](https://github.com/FireTable/pixel-emoji-studio)

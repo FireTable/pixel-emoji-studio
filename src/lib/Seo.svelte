@@ -1,9 +1,9 @@
 <script lang="ts">
   import { LOCALES, type Locale } from "./i18n";
+  import { APP_NAME } from "./brand";
 
   const origin = "https://emoji.firetable.tech";
-  const image = origin + "/og.png";
-  const name = "Emoji Studio";
+  const image = origin + "/og.png?v=pixel-emoji-studio";
   const license = "https://creativecommons.org/licenses/by-nc/4.0/";
 
   let { locale }: { locale: Locale } = $props();
@@ -14,7 +14,7 @@
     JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebApplication",
-      name,
+      name: APP_NAME,
       url,
       description: copy.description,
       image,
@@ -39,7 +39,7 @@
   <link rel="describedby" href={origin + "/llms.txt"} />
 
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content={name} />
+  <meta property="og:site_name" content={APP_NAME} />
   <meta property="og:title" content={copy.title} />
   <meta property="og:description" content={copy.description} />
   <meta property="og:url" content={url} />

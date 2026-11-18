@@ -1,10 +1,10 @@
-# Emoji Studio
+# Pixel Emoji Studio
 
-Make transparent 16×16 pixel emoji from a short prompt. Emoji Studio is FireTable’s non-commercial adaptation of [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji).
+Make transparent 16×16 pixel emoji from a short prompt. Pixel Emoji Studio is FireTable’s non-commercial adaptation of [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji).
 
 [Live demo](https://emoji.firetable.tech/) · [简体中文](README-CN.md) · [Mobile screenshot](screenshots/mobile.png)
 
-![Emoji Studio desktop workspace showing the fire sprite and outline comparison](screenshots/desktop.png)
+![Pixel Emoji Studio desktop workspace showing the fire sprite and outline comparison](screenshots/desktop.png)
 
 ## Features
 
@@ -16,8 +16,8 @@ Make transparent 16×16 pixel emoji from a short prompt. Emoji Studio is FireTab
 ## Run locally
 
 ```sh
-git clone https://github.com/FireTable/emoji-studio.git
-cd emoji-studio
+git clone https://github.com/FireTable/pixel-emoji-studio.git
+cd pixel-emoji-studio
 npm ci
 npm run dev
 ```
@@ -41,7 +41,7 @@ The English and Chinese pages ship as prerendered HTML and link to their [Markdo
 
 ## Credits and license
 
-Emoji Studio builds on Caleb Fahlgren’s [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji), reusing its page code, chat preview design, and some example images and background sprites. FireTable updated the workspace and added outline repair, history, and display settings.
+Pixel Emoji Studio builds on Caleb Fahlgren’s [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji), reusing its page code, chat preview design, and some example images and background sprites. FireTable updated the workspace and added outline repair, history, and display settings.
 
 The original app and Jagrat Patel’s [Tessera-small weights](https://huggingface.co/thejagstudio/tessera-small#license) are available under [CC BY-NC 4.0](LICENSE). The adaptation and redistributed Tessera shards follow those terms. A commercial license for Tessera requires separate permission from its author.
 

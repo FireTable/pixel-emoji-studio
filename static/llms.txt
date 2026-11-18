@@ -1,4 +1,4 @@
-# Emoji Studio
+# Pixel Emoji Studio
 
 > A non-commercial web app that makes transparent 16×16 pixel emoji from short text prompts in the browser.
 
@@ -8,7 +8,7 @@
 - [简体中文介绍（Markdown）](https://emoji.firetable.tech/zh/about.md): 模型分片、端侧推理、描边修复和本地历史。
 - [English app](https://emoji.firetable.tech/): Generate four pixel emoji, repair outlines, export PNGs, and revisit browser-local history.
 - [简体中文](https://emoji.firetable.tech/zh/): 中文界面。建议使用英文提示词。
-- [Source and documentation](https://github.com/FireTable/emoji-studio): SvelteKit static app with an ONNX Runtime Web worker. WebGPU runs on the visitor's GPU when available. WebAssembly uses the visitor's CPU.
+- [Source and documentation](https://github.com/FireTable/pixel-emoji-studio): SvelteKit static app with an ONNX Runtime Web worker. WebGPU runs on the visitor's GPU when available. WebAssembly uses the visitor's CPU.
 
 ## Original project and model
 

@@ -1,3 +1,5 @@
+import { APP_NAME } from "./brand";
+
 export type Locale = "en" | "zh";
 
 export const LOCALES = {
@@ -5,9 +7,9 @@ export const LOCALES = {
     lang: "en",
     path: "/",
     ogLocale: "en_US",
-    title: "Emoji Studio – Pixel Emoji Generator | FireTable",
-    description: "Make transparent 16×16 pixel emoji from a text prompt. Emoji Studio runs Tessera-small on your device with WebGPU or WebAssembly.",
-    imageAlt: "Emoji Studio with a pixel-art cat wearing sunglasses and sample emoji.",
+    title: `${APP_NAME} – Browser Emoji Generator | FireTable`,
+    description: `Make transparent 16×16 pixel emoji from a text prompt. ${APP_NAME} runs Tessera-small on your device with WebGPU or WebAssembly.`,
+    imageAlt: `${APP_NAME} with a pixel-art cat wearing sunglasses and sample emoji.`,
     subtitle: "Turn a short description into a pixel emoji, right in your browser.",
     preferences: "Display settings",
     languages: "Language",
@@ -59,14 +61,14 @@ export const LOCALES = {
     historyEmpty: "Your generated emoji will appear here.",
     historyError: "This browser couldn’t save or open your history.",
     historyMore: "Show older",
-    about: "How Emoji Studio works",
+    about: `How ${APP_NAME} works`,
     aboutOriginal: {
       title: "Built on Slack Moji",
-      app: "Caleb Fahlgren’s Slack Moji brought Tessera-small to the browser using ONNX and JavaScript. Emoji Studio is FireTable’s non-commercial adaptation of that app. It builds on the original page code and reuses the chat preview design and some pixel art, including example images and background sprites.",
-      model: "Jagrat Patel trained Tessera-small for 16×16 pixel art using images from Angais’s Pixel Art Atlas. Emoji Studio uses the same model weights.",
+      app: `Caleb Fahlgren’s Slack Moji brought Tessera-small to the browser using ONNX and JavaScript. ${APP_NAME} is FireTable’s non-commercial adaptation of that app. It builds on the original page code and reuses the chat preview design and some pixel art, including example images and background sprites.`,
+      model: `Jagrat Patel trained Tessera-small for 16×16 pixel art using images from Angais’s Pixel Art Atlas. ${APP_NAME} uses the same model weights.`,
     },
     aboutChanges: {
-      title: "What Emoji Studio adds",
+      title: `What ${APP_NAME} adds`,
       items: [
         {
           title: "Split model downloads",
@@ -96,15 +98,14 @@ export const LOCALES = {
     },
     original: "Original Slack Moji on Hugging Face",
     model: "Tessera-small by Jagrat Patel",
-    source: "FireTable/emoji-studio",
   },
   zh: {
     lang: "zh-CN",
     path: "/zh/",
     ogLocale: "zh_CN",
-    title: "Emoji Studio – 浏览器像素表情生成器 | FireTable",
-    description: "用文字生成 16×16 透明像素表情。Emoji Studio 通过 WebGPU 或 WebAssembly 在你的设备上运行 Tessera-small。",
-    imageAlt: "Emoji Studio 分享卡，画面中有一只戴墨镜的像素猫和几个示例表情。",
+    title: `${APP_NAME} – 浏览器像素表情生成器 | FireTable`,
+    description: `用文字生成 16×16 透明像素表情。${APP_NAME} 通过 WebGPU 或 WebAssembly 在你的设备上运行 Tessera-small。`,
+    imageAlt: `${APP_NAME} 分享卡，画面中有一只戴墨镜的像素猫和几个示例表情。`,
     subtitle: "输入一句描述，在浏览器里生成像素表情。",
     preferences: "显示设置",
     languages: "语言",
@@ -156,14 +157,14 @@ export const LOCALES = {
     historyEmpty: "生成过的表情会出现在这里。",
     historyError: "这个浏览器无法保存或读取历史记录。",
     historyMore: "查看更多",
-    about: "Emoji Studio 怎么运行？",
+    about: `${APP_NAME} 怎么运行？`,
     aboutOriginal: {
       title: "从原版 Slack Moji 开始",
-      app: "Caleb Fahlgren 的 Slack Moji 用 ONNX 和 JavaScript 把 Tessera-small 带到了浏览器。Emoji Studio 是 FireTable 基于原版页面源码制作的非商业改版，沿用了聊天预览的设计，以及部分示例图和背景像素小图。",
-      model: "Tessera-small 由 Jagrat Patel 使用 Angais 的 Pixel Art Atlas 数据集训练，专门生成 16×16 像素图。Emoji Studio 沿用这套模型权重。",
+      app: `Caleb Fahlgren 的 Slack Moji 用 ONNX 和 JavaScript 把 Tessera-small 带到了浏览器。${APP_NAME} 是 FireTable 基于原版页面源码制作的非商业改版，沿用了聊天预览的设计，以及部分示例图和背景像素小图。`,
+      model: `Tessera-small 由 Jagrat Patel 使用 Angais 的 Pixel Art Atlas 数据集训练，专门生成 16×16 像素图。${APP_NAME} 沿用这套模型权重。`,
     },
     aboutChanges: {
-      title: "Emoji Studio 增加了什么",
+      title: `${APP_NAME} 增加了什么`,
       items: [
         {
           title: "ONNX 模型拆包与并行下载",
@@ -193,6 +194,5 @@ export const LOCALES = {
     },
     original: "Hugging Face 上的原版 Slack Moji",
     model: "Jagrat Patel 的 Tessera-small",
-    source: "FireTable/emoji-studio",
   },
 } as const;
