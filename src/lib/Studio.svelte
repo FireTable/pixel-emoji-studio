@@ -21,7 +21,6 @@
   type LoadStage = "download" | "load" | "check";
 
   let status = $state<Status>("loading");
-  let mountReady = $state(false);
   let recovery = $state(false);
   let theme = $state<Theme>("system");
   let loadDialog = $state<HTMLDialogElement>();
@@ -38,7 +37,7 @@
   // The loader paints this sprite in, pixel by pixel, as the model downloads.
   let loaderSprite = $state<ImageData | null>(null);
   let prompt = $state(EXAMPLES[0]);
-  let shownPrompt = $state("");
+  let shownPrompt = $state(EXAMPLES[0]);
   let selected = $state(0);
   let ms = $state(0);
   let copied = $state(false);
@@ -55,6 +54,7 @@
   let seed = 1;
 
   const mb = (b: number) => Math.round(b / 1e6);
+  const initialSprite = (index: number) => `/examples/${slug(EXAMPLES[0])}-${index}.png`;
 
   // Draw a 16x16 sprite onto a canvas with crisp pixels.
   function paint(canvas: HTMLCanvasElement | undefined, img: ImageData | null) {
@@ -274,7 +274,6 @@
     loadImageData("/examples/rubber-duck-0.png").then((img) => (loaderSprite = img), () => {});
     void (async () => {
       await showExample(EXAMPLES[0]);
-      mountReady = true;
       const previous = previousLoad();
       if (previous === "recovery") {
         status = "crashed";
@@ -290,7 +289,7 @@
   });
 
   $effect(() => {
-    if (!mountReady || !loadDialog) return;
+    if (!loadDialog) return;
     if (showLoader && !loadDialog.open) loadDialog.showModal();
     if (!showLoader && loadDialog.open) loadDialog.close();
   });
@@ -318,9 +317,10 @@
   let shortcode = $derived(`:${slug(activePrompt)}:`);
   let busy = $derived(status === "working");
   let canMake = $derived(!!engine && status === "ready");
-  let showLoader = $derived(status === "loading" || status === "crashed" || (status === "error" && !engine));
+  let loadFailed = $derived(status === "crashed" || (status === "error" && !engine));
+  let showLoader = $derived(status === "loading" || loadFailed);
   let downloadFrac = $derived(total ? Math.min(1, loaded / total) : 0);
-  let loaderImage = $derived(loaderSprite && partialSprite(loaderSprite, status !== "loading" ? 0 : loadStage === "download" ? downloadFrac : 1));
+  let loaderImage = $derived(loaderSprite && partialSprite(loaderSprite, loadFailed ? 0 : loadStage === "download" ? downloadFrac : 1));
   let loaderTitle = $derived(
     status === "crashed" ? words.closed
       : status === "error" ? words.loadError
@@ -387,6 +387,8 @@
           <OutlineCompare before={sprites[selected]!} after={current} beforeLabel={words.before} afterLabel={words.after} label={words.compare} />
         {:else if current}
           <canvas width="256" height="256" use:pixelAction={current}></canvas>
+        {:else}
+          <img src={initialSprite(0)} alt="" width="256" height="256" />
         {/if}
       </div>
     </div>
@@ -398,25 +400,38 @@
           <div><b>{words.you}</b> <span class="muted small">{words.now}</span></div>
           <div class="line">
             {words.message}
-            {#if current}<canvas class="inline" width="64" height="64" use:pixelAction={current}></canvas>{/if}
+            {#if current}
+              <canvas class="inline" width="64" height="64" use:pixelAction={current}></canvas>
+            {:else}
+              <img class="inline" src={initialSprite(0)} alt="" width="64" height="64" />
+            {/if}
           </div>
-          {#if current}
-            <div class="reactions">
-              <span class="reaction mine"><canvas width="32" height="32" use:pixelAction={current}></canvas>3</span>
-              <span class="reaction"><span class="uni">🎉</span>2</span>
-              <span class="reaction"><span class="uni">🙌</span>1</span>
-              <span class="reaction add" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8" /><circle cx="9.2" cy="10.2" r="1.1" fill="currentColor" /><circle cx="14.8" cy="10.2" r="1.1" fill="currentColor" /><path d="M8.8 14c.8 1.1 1.9 1.7 3.2 1.7s2.4-.6 3.2-1.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
-              </span>
-            </div>
-          {/if}
+          <div class="reactions">
+            <span class="reaction mine">
+              {#if current}
+                <canvas width="32" height="32" use:pixelAction={current}></canvas>
+              {:else}
+                <img src={initialSprite(0)} alt="" width="32" height="32" />
+              {/if}
+              3
+            </span>
+            <span class="reaction"><span class="uni">🎉</span>2</span>
+            <span class="reaction"><span class="uni">🙌</span>1</span>
+            <span class="reaction add" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8" /><circle cx="9.2" cy="10.2" r="1.1" fill="currentColor" /><circle cx="14.8" cy="10.2" r="1.1" fill="currentColor" /><path d="M8.8 14c.8 1.1 1.9 1.7 3.2 1.7s2.4-.6 3.2-1.7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+            </span>
+          </div>
         </div>
       </div>
 
       <div class="picks">
         {#each displayed as s, i (i)}
-          <button class="pick" class:on={i === selected} class:empty={!s} disabled={!s || i >= made} onclick={() => (selected = i)} aria-label={words.variation(i + 1)} aria-pressed={i === selected}>
-            <canvas width="64" height="64" use:pixelAction={s}></canvas>
+          <button class="pick" class:on={i === selected} class:empty={!s && (status === "working" || !!made)} disabled={!s || i >= made} onclick={() => (selected = i)} aria-label={words.variation(i + 1)} aria-pressed={i === selected}>
+            {#if s || status === "working" || made}
+              <canvas width="64" height="64" use:pixelAction={s}></canvas>
+            {:else}
+              <img src={initialSprite(i)} alt="" width="64" height="64" />
+            {/if}
           </button>
         {/each}
       </div>
@@ -463,7 +478,7 @@
   <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a>
   <a class="source" href="https://github.com/FireTable/emoji-studio" target="_blank" rel="noopener">
     {words.source}
-    <span class="footer-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"/></svg></span>
+    <span class="footer-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M10.226 17.284c-2.965-.36-5.054-2.493-5.054-5.256 0-1.123.404-2.336 1.078-3.144-.292-.741-.247-2.314.09-2.965.898-.112 2.111.36 2.83 1.01.853-.269 1.752-.404 2.853-.404 1.1 0 1.999.135 2.807.382.696-.629 1.932-1.1 2.83-.988.315.606.36 2.179.067 2.942.72.854 1.101 2 1.101 3.167 0 2.763-2.089 4.852-5.098 5.234.763.494 1.28 1.572 1.28 2.807v2.336c0 .674.561 1.056 1.235.786 4.066-1.55 7.255-5.615 7.255-10.646C23.5 6.188 18.334 1 11.978 1 5.62 1 .5 6.188.5 12.545c0 4.986 3.167 9.12 7.435 10.669.606.225 1.19-.18 1.19-.786V20.63a2.9 2.9 0 0 1-1.078.224c-1.483 0-2.359-.808-2.987-2.313-.247-.607-.517-.966-1.034-1.033-.27-.023-.359-.135-.359-.27 0-.27.45-.471.898-.471.652 0 1.213.404 1.797 1.235.45.651.921.943 1.483.943.561 0 .92-.202 1.437-.719.382-.381.674-.718.944-.943"/></svg></span>
   </a>
 </footer>
 </div>
@@ -478,8 +493,25 @@
     </button>
   </div>
   <div class="drawer-body">
-    <p>{words.intro}</p>
-    <p>{words.local}</p>
+    <section>
+      <h3>{words.aboutOriginal.title}</h3>
+      <p>{words.aboutOriginal.app}</p>
+      <p>{words.aboutOriginal.model}</p>
+      <ul class="about-links">
+        <li><a href="https://huggingface.co/spaces/cfahlgren1/slack-moji" target="_blank" rel="noopener">{words.original}</a></li>
+        <li><a href="https://huggingface.co/thejagstudio/tessera-small" target="_blank" rel="noopener">{words.model}</a></li>
+      </ul>
+    </section>
+    <section>
+      <h3>{words.aboutChanges.title}</h3>
+      <p>{words.aboutChanges.workflow}</p>
+      <p>{words.aboutChanges.site}</p>
+    </section>
+    <section>
+      <h3>{words.aboutLocal.title}</h3>
+      <p>{words.aboutLocal.device}</p>
+      <p>{words.aboutLocal.cache}</p>
+    </section>
   </div>
 </dialog>
 
@@ -491,15 +523,13 @@
   </div>
   <div class="load-status" role="status">
     <p id="load-title">{loaderTitle}</p>
-    <p class="muted small">{loaderDetail}</p>
+    {#if loaderDetail}<p class="muted small">{loaderDetail}</p>{/if}
   </div>
-  <div class="load-controls">
-    {#if status === "loading" && loadStage === "download"}
-      <progress value={loaded} max={total} aria-label={loaderTitle}></progress>
-    {:else if status !== "loading"}
-      <button class="chip dark" onclick={() => startLoading(true)}>{words.retry}</button>
-    {/if}
-  </div>
+  {#if loadFailed}
+    <button class="chip dark" onclick={() => startLoading(true)}>{words.retry}</button>
+  {:else if status === "loading" && loadStage === "download"}
+    <progress value={loaded} max={total} aria-label={loaderTitle}></progress>
+  {/if}
 </dialog>
 
 <style>
@@ -618,7 +648,7 @@
     font: 600 13px/1 Inter, sans-serif;
     color: var(--ink);
   }
-  .reaction canvas {
+  .reaction canvas, .reaction img {
     width: 18px;
     height: 18px;
     image-rendering: pixelated;
@@ -756,7 +786,7 @@
     background-image: conic-gradient(var(--checker) 25%, var(--surface) 0 50%, var(--checker) 0 75%, var(--surface) 0);
     background-size: 28px 28px;
   }
-  .big > canvas {
+  .big > canvas, .big > img {
     width: 80%;
     height: 80%;
     image-rendering: pixelated;
@@ -775,6 +805,7 @@
   }
   .load-dialog {
     width: min(350px, calc(100% - 32px));
+    height: 268px;
     max-height: calc(100% - 32px);
     border: 1px solid var(--line);
     border-radius: 24px;
@@ -783,16 +814,21 @@
     color: var(--ink);
     box-shadow: 0 20px 80px #15102044;
     text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    justify-content: safe center;
+    gap: 12px;
     opacity: 0;
     transform: translateY(8px) scale(.98);
     transition: opacity 180ms, transform 220ms ease-out, display 220ms allow-discrete, overlay 220ms allow-discrete;
   }
   .load-dialog[open] {
-    display: grid;
-    grid-template-rows: 84px 94px 40px;
+    display: flex;
     opacity: 1;
     transform: none;
   }
+  .load-dialog:focus { outline: none; }
   .load-dialog::backdrop, .about-drawer::backdrop {
     opacity: 0;
     background: #19122470;
@@ -800,9 +836,9 @@
     transition: opacity 220ms, display 220ms allow-discrete, overlay 220ms allow-discrete;
   }
   .load-dialog[open]::backdrop, .about-drawer[open]::backdrop { opacity: 1; }
-  .load-art, .load-controls { display: grid; place-items: center; }
-  .load-dialog canvas { width: 80px; height: 80px; image-rendering: pixelated; }
-  .load-status { display: grid; grid-template-rows: 42px 52px; }
+  .load-art { flex: 0 0 80px; }
+  .load-dialog canvas { display: block; width: 80px; height: 80px; image-rendering: pixelated; }
+  .load-status { display: grid; gap: 4px; min-height: 0; }
   .load-status p {
     margin: 0;
     overflow: auto;
@@ -810,7 +846,7 @@
     line-height: 1.4;
   }
   #load-title { align-content: center; font-size: 17px; font-weight: 700; }
-  .load-dialog progress { width: min(220px, 100%); height: 8px; accent-color: var(--accent); }
+  .load-dialog progress { flex: 0 0 8px; width: min(220px, 100%); accent-color: var(--accent); }
   .about-drawer {
     position: fixed;
     inset: 0 0 0 auto;
@@ -823,11 +859,12 @@
     border: 0;
     background: var(--surface);
     color: var(--ink);
+    grid-template-rows: auto minmax(0, 1fr);
     opacity: 0;
     transform: translateX(24px);
     transition: opacity 180ms ease, transform 240ms cubic-bezier(.2,.75,.25,1), display 240ms allow-discrete, overlay 240ms allow-discrete;
   }
-  .about-drawer[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); opacity: 1; transform: none; }
+  .about-drawer[open] { display: grid; opacity: 1; transform: none; }
   .drawer-header { display: flex; justify-content: space-between; align-items: center; padding: 22px 24px 16px; gap: 12px; }
   .drawer-header h2 { margin: 0; font-size: 21px; letter-spacing: -.025em; }
   .drawer-close {
@@ -841,7 +878,13 @@
     color: var(--ink);
     cursor: pointer;
   }
-  .drawer-body { overflow: auto; padding: 0 24px 26px; color: var(--muted); line-height: 1.65; }
+  .drawer-body { overflow: auto; overscroll-behavior: contain; padding: 2px 24px 28px; color: var(--muted); line-height: 1.65; }
+  .drawer-body section + section { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .drawer-body h3 { margin: 0 0 6px; color: var(--ink); font-size: 16px; }
+  .drawer-body p { margin: 0; font-size: 14px; }
+  .drawer-body p + p { margin-top: 9px; }
+  .about-links { margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; }
+  .about-links a { color: var(--accent); text-underline-offset: 3px; }
   @starting-style {
     .load-dialog[open] { opacity: 0; transform: translateY(8px) scale(.98); }
     .about-drawer[open] { opacity: 0; transform: translateX(24px); }
@@ -922,7 +965,7 @@
     background: var(--tint);
     box-shadow: inset 0 0 0 2px var(--accent);
   }
-  .pick canvas {
+  .pick canvas, .pick img {
     width: 100%;
     height: 100%;
     image-rendering: pixelated;

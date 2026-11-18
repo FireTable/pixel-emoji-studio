@@ -54,15 +54,6 @@
 
 <header class="toolbar" aria-label={words.preferences} bind:this={toolbar}>
   <div class="group">
-    <button type="button" class="icon" aria-label={words.history} title={words.history} onclick={() => { open = null; onHistory(); }}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.3 7M3 6v5h5m4-3v4l3 2" /></svg>
-    </button>
-    <button type="button" class="icon" aria-label={words.about} title={words.about} onclick={() => { open = null; onAbout(); }}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5m0-8h.01" /></svg>
-    </button>
-  </div>
-
-  <div class="group">
     <button
       type="button" class="icon" aria-label={words.theme} title={words.theme}
       popovertarget={themeId} aria-expanded={fallback ? open === "theme" : undefined}
@@ -93,7 +84,7 @@
     >
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18m-9-9c2.3 2.5 3.5 5.5 3.5 9s-1.2 6.5-3.5 9c-2.3-2.5-3.5-5.5-3.5-9s1.2-6.5 3.5-9Z" /></svg>
     </button>
-    <nav id={languageId} aria-label={words.languages} popover="auto" class="options" class:fallback-open={fallback && open === "language"} style:--trigger={`--${languageId}`} bind:this={languagePopover}>
+    <nav id={languageId} aria-label={words.languages} popover="auto" class="options language-options" class:fallback-open={fallback && open === "language"} style:--trigger={`--${languageId}`} bind:this={languagePopover}>
       <p>{words.languages}</p>
       {#each locales as lang (lang)}
         <a class="option" href={LOCALES[lang].path} hreflang={LOCALES[lang].lang} lang={LOCALES[lang].lang} aria-current={locale === lang ? "page" : undefined} onclick={() => close("language")}>
@@ -102,28 +93,37 @@
         </a>
       {/each}
     </nav>
+    <button type="button" class="icon" aria-label={words.history} title={words.history} onclick={() => { open = null; onHistory(); }}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11a9 9 0 1 1 2.3 7M3 6v5h5m4-3v4l3 2" /></svg>
+    </button>
+    <button type="button" class="icon" aria-label={words.about} title={words.about} onclick={() => { open = null; onAbout(); }}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v5m0-8h.01" /></svg>
+    </button>
   </div>
 </header>
 
 <style>
   .toolbar {
     --gutter: max(16px, (100vw - 920px) / 2);
+    --tool-size: 42px;
+    --tool-gap: 7px;
+    --slot: calc(var(--tool-size) + var(--tool-gap));
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     width: min(920px, calc(100% - 32px));
     margin: 20px auto 0;
   }
 
   .group {
     display: flex;
-    gap: 7px;
+    gap: var(--tool-gap);
   }
 
   .icon {
     display: grid;
-    width: 42px;
-    height: 42px;
+    width: var(--tool-size);
+    height: var(--tool-size);
     place-items: center;
     margin: 0;
     padding: 0;
@@ -151,10 +151,11 @@
   }
 
   .options {
+    --menu-width: min(188px, calc(100vw - 32px));
     display: none;
     position: fixed;
-    inset: 70px var(--gutter) auto auto;
-    width: min(188px, calc(100vw - 32px));
+    inset: 70px min(calc(100vw - var(--menu-width) - 16px), calc(var(--gutter) + var(--slot) * var(--tools-after))) auto auto;
+    width: var(--menu-width);
     margin: 0;
     padding: 6px;
     border: 1px solid var(--line);
@@ -170,13 +171,18 @@
     transition-behavior: allow-discrete;
   }
 
-  .theme-options { right: calc(var(--gutter) + 49px); }
+  .theme-options { --tools-after: 3; }
+  .language-options { --tools-after: 2; }
 
-  @supports (top: anchor(bottom)) {
+  @supports (position-area: block-end span-inline-start) and (position-try-fallbacks: flip-inline) {
     .options {
+      inset: auto;
       position-anchor: var(--trigger);
-      top: calc(anchor(bottom) + 7px);
-      right: anchor(right);
+      position-area: block-end span-inline-start;
+      position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
+      align-self: start;
+      justify-self: end;
+      margin-block: 7px;
     }
   }
 
