@@ -12,6 +12,8 @@ Emoji Studio 是免费的非商业网页工具。输入一句描述，可以在�
 
 ## 本地推理与鸣谢
 
-原版 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 由 Caleb Fahlgren 创建，将 Jagrat Patel 的 [Tessera-small](https://huggingface.co/thejagstudio/tessera-small) 带到网页端。Emoji Studio 保留原始模型权重，适用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)。ONNX Runtime Web 通过 WebGPU 使用访客自己的 GPU，也可通过 WebAssembly 使用 CPU。提示词、生成结果和历史都留在浏览器中。
+Emoji Studio 以 Caleb Fahlgren 的 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 页面源码为基础，沿用了聊天预览的设计，以及部分示例图和背景像素小图。本站改版和 Jagrat Patel 的 [Tessera-small 权重](https://huggingface.co/thejagstudio/tessera-small) 沿用 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)。
+
+ONNX Runtime Web 通过 WebGPU 使用访客自己的 GPU，也可通过 WebAssembly 使用 CPU。提示词、生成结果和历史都留在浏览器中。
 
 [打开 Emoji Studio](https://emoji.firetable.tech/zh/) · [English](https://emoji.firetable.tech/about.md) · [源代码](https://github.com/FireTable/emoji-studio)

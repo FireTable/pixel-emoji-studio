@@ -62,7 +62,7 @@ export const LOCALES = {
     about: "How Emoji Studio works",
     aboutOriginal: {
       title: "Built on Slack Moji",
-      app: "Caleb Fahlgren’s Slack Moji turns a short prompt into transparent 16×16 pixel emoji in your browser. It brought the Tessera-small model to the web using ONNX and JavaScript.",
+      app: "Caleb Fahlgren’s Slack Moji brought Tessera-small to the browser using ONNX and JavaScript. Emoji Studio is FireTable’s non-commercial adaptation of that app. It builds on the original page code and reuses the chat preview design and some pixel art, including example images and background sprites.",
       model: "Jagrat Patel trained Tessera-small for 16×16 pixel art using images from Angais’s Pixel Art Atlas. Emoji Studio uses the same model weights.",
     },
     aboutChanges: {
@@ -159,7 +159,7 @@ export const LOCALES = {
     about: "Emoji Studio 怎么运行？",
     aboutOriginal: {
       title: "从原版 Slack Moji 开始",
-      app: "Slack Moji 由 Caleb Fahlgren 创建，输入一句描述，就能在浏览器里生成 16×16 的透明像素表情。他用 ONNX 和 JavaScript 把 Tessera-small 带到了网页端。",
+      app: "Caleb Fahlgren 的 Slack Moji 用 ONNX 和 JavaScript 把 Tessera-small 带到了浏览器。Emoji Studio 是 FireTable 基于原版页面源码制作的非商业改版，沿用了聊天预览的设计，以及部分示例图和背景像素小图。",
       model: "Tessera-small 由 Jagrat Patel 使用 Angais 的 Pixel Art Atlas 数据集训练，专门生成 16×16 像素图。Emoji Studio 沿用这套模型权重。",
     },
     aboutChanges: {

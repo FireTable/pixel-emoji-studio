@@ -12,6 +12,8 @@ Emoji Studio is a free, non-commercial web app that makes transparent 16×16 pix
 
 ## Local inference and credits
 
-The original [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) by Caleb Fahlgren brought Jagrat Patel’s [Tessera-small](https://huggingface.co/thejagstudio/tessera-small) to the browser. Emoji Studio uses the original model weights under [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). ONNX Runtime Web runs on the visitor’s GPU through WebGPU or on their CPU through WebAssembly. Prompts, generated images, and history stay in the browser.
+Emoji Studio builds on the page code of Caleb Fahlgren’s [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) and reuses its chat preview design and some example images and background sprites. The adaptation and Jagrat Patel’s [Tessera-small weights](https://huggingface.co/thejagstudio/tessera-small) follow [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/).
+
+ONNX Runtime Web runs on the visitor’s GPU through WebGPU or on their CPU through WebAssembly. Prompts, generated images, and history stay in the browser.
 
 [Open Emoji Studio](https://emoji.firetable.tech/) · [简体中文](https://emoji.firetable.tech/zh/about.md) · [Source code](https://github.com/FireTable/emoji-studio)

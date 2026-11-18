@@ -32,6 +32,8 @@ npm run dev
 
 ## 鸣谢与许可
 
-感谢 Caleb Fahlgren 制作 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji)，以及 Jagrat Patel（TheJagStudio）训练 [Tessera-small](https://huggingface.co/thejagstudio/tessera-small#license)。原版应用和 Tessera 权重采用 [CC BY-NC 4.0](LICENSE)，本站的改版和再分发的 Tessera 分片沿用该许可。商业使用 Tessera 需向模型作者另行取得授权。
+Emoji Studio 以 Caleb Fahlgren 的 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 页面源码为基础，沿用了聊天预览的设计，以及部分示例图和背景像素小图。FireTable 调整了工作区，增加了描边修复、历史记录和显示设置。
+
+原版应用和 Jagrat Patel（TheJagStudio）训练的 [Tessera-small 权重](https://huggingface.co/thejagstudio/tessera-small#license) 采用 [CC BY-NC 4.0](LICENSE)。本站的改版和再分发的 Tessera 分片沿用该许可。商业使用 Tessera 需向模型作者另行取得授权。
 
 感谢 Angais 发布 [Pixel Art Atlas 1.4M](https://huggingface.co/datasets/Angais/pixel-art-atlas-1.4m)，OpenAI 发布 [CLIP](https://github.com/openai/CLIP/blob/main/LICENSE)（MIT），以及 [ONNX Runtime Web](https://onnxruntime.ai/docs/tutorials/web/) 提供浏览器推理支持。

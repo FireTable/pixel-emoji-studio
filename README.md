@@ -41,6 +41,8 @@ The English and Chinese pages ship as prerendered HTML and link to their [Markdo
 
 ## Credits and license
 
-The [Slack Moji app](https://huggingface.co/spaces/cfahlgren1/slack-moji) by Caleb Fahlgren and the [Tessera-small weights](https://huggingface.co/thejagstudio/tessera-small#license) by Jagrat Patel (TheJagStudio) are available under [CC BY-NC 4.0](LICENSE). Emoji Studio follows those terms for the adaptation and redistributed Tessera shards. A commercial license for Tessera requires separate permission from its author.
+Emoji Studio builds on Caleb Fahlgren’s [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji), reusing its page code, chat preview design, and some example images and background sprites. FireTable updated the workspace and added outline repair, history, and display settings.
+
+The original app and Jagrat Patel’s [Tessera-small weights](https://huggingface.co/thejagstudio/tessera-small#license) are available under [CC BY-NC 4.0](LICENSE). The adaptation and redistributed Tessera shards follow those terms. A commercial license for Tessera requires separate permission from its author.
 
 Thanks to Angais for [Pixel Art Atlas 1.4M](https://huggingface.co/datasets/Angais/pixel-art-atlas-1.4m), OpenAI for [CLIP](https://github.com/openai/CLIP/blob/main/LICENSE) (MIT), and the [ONNX Runtime Web](https://onnxruntime.ai/docs/tutorials/web/) project.
