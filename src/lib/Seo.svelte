@@ -4,6 +4,7 @@
   const origin = "https://emoji.firetable.tech";
   const image = origin + "/og.png";
   const name = "Emoji Studio";
+  const license = "https://creativecommons.org/licenses/by-nc/4.0/";
 
   let { locale }: { locale: Locale } = $props();
   let copy = $derived(LOCALES[locale]);
@@ -20,6 +21,9 @@
       inLanguage: copy.lang,
       applicationCategory: "MultimediaApplication",
       isAccessibleForFree: true,
+      license,
+      isBasedOn: "https://huggingface.co/spaces/cfahlgren1/slack-moji",
+      featureList: copy.aboutChanges.items.map(({ title }) => title),
     }).replaceAll("<", "\\u003c"),
   );
 </script>
@@ -31,6 +35,8 @@
   <link rel="alternate" hreflang="en" href={origin + LOCALES.en.path} />
   <link rel="alternate" hreflang="zh-CN" href={origin + LOCALES.zh.path} />
   <link rel="alternate" hreflang="x-default" href={origin + LOCALES.en.path} />
+  <link rel="alternate" type="text/markdown" href={url + "about.md"} />
+  <link rel="describedby" href={origin + "/llms.txt"} />
 
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content={name} />

@@ -2,10 +2,15 @@
 
 > A non-commercial web app that makes transparent 16×16 pixel emoji from short text prompts in the browser.
 
+## App and documentation
+
+- [English overview in Markdown](https://emoji.firetable.tech/about.md): Features, ONNX model downloads, local inference, and attribution.
+- [简体中文介绍（Markdown）](https://emoji.firetable.tech/zh/about.md): 模型分片、端侧推理、描边修复和本地历史。
 - [English app](https://emoji.firetable.tech/): Generate four pixel emoji, repair outlines, export PNGs, and revisit browser-local history.
 - [简体中文](https://emoji.firetable.tech/zh/): 中文界面。建议使用英文提示词。
 - [Source and documentation](https://github.com/FireTable/emoji-studio): SvelteKit static app with an ONNX Runtime Web worker. WebGPU runs on the visitor's GPU when available. WebAssembly uses the visitor's CPU.
+
+## Original project and model
+
 - [Original Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji): Caleb Fahlgren's browser implementation.
 - [Tessera-small model](https://huggingface.co/thejagstudio/tessera-small): 47.6M-parameter 16×16 masked-diffusion model by Jagrat Patel, CC BY-NC 4.0.
-
-The two INT8 ONNX models total about 115 MB and can be cached by the browser. Prompts, generated images, and history stay on the visitor's device.

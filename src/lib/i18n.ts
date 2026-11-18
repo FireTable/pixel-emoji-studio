@@ -67,13 +67,32 @@ export const LOCALES = {
     },
     aboutChanges: {
       title: "What Emoji Studio adds",
-      workflow: "Turn on outline repair to fill small gaps around the edge. Drag the preview slider to compare the original and repaired image. Use the history drawer to revisit, copy, or download earlier results.",
-      site: "FireTable redesigned the workspace, added light and dark appearances and English and Simplified Chinese, and moved the site and model downloads to Cloudflare.",
+      items: [
+        {
+          title: "Split model downloads",
+          detail: "We split the original Tessera-small and CLIP ONNX files into eight parts, each at most 16 MiB. The browser can fetch up to four parts at once from the CDN, reassemble the two models in memory, and reuse the cached parts on later visits. The first visit still downloads about 115 MB of weights.",
+        },
+        {
+          title: "Outline repair with a comparison slider",
+          detail: "Fill small gaps along the transparent outer edge while preserving the original pixels and enclosed transparent areas. Drag the slider to compare both versions. Copying or exporting uses the version selected by the repair switch.",
+        },
+        {
+          title: "Local generation history",
+          detail: "IndexedDB stores the prompt, time, and generated variants in this browser. Open the history drawer to preview an earlier result, switch variants, copy an image, or download a PNG while keeping your current work in place.",
+        },
+        {
+          title: "Workspace, appearance, and language",
+          detail: "The preview and editing controls sit side by side on desktop and stack on mobile. Choose English or Simplified Chinese and a light, dark, or system appearance.",
+        },
+        {
+          title: "Cloudflare hosting and startup recovery",
+          detail: "Cloudflare Pages serves the app, and the CDN serves the model files. After an interrupted startup, the next load in the same tab tries one part at a time and runs the model on the CPU to ease memory pressure.",
+        },
+      ],
     },
     aboutLocal: {
       title: "How generation runs on your device",
       device: "The browser runs Tessera-small and the CLIP text encoder on your GPU using WebGPU, with a WebAssembly CPU fallback. Your prompts, images, and IndexedDB history stay in this browser.",
-      cache: "The first visit downloads about 115 MB of model weights in parallel. Your browser reuses the cached files while they remain available.",
     },
     original: "Original Slack Moji on Hugging Face",
     model: "Tessera-small by Jagrat Patel",
@@ -145,13 +164,32 @@ export const LOCALES = {
     },
     aboutChanges: {
       title: "Emoji Studio 增加了什么",
-      workflow: "开启描边修复可以补上外轮廓的小缺口，拖动滑块就能比较修复前后。历史抽屉可以打开之前的结果，直接预览、复制或下载。",
-      site: "FireTable 重新设计了工作区，加入明暗模式和中英文界面，并把站点与模型下载迁移到了 Cloudflare。",
+      items: [
+        {
+          title: "ONNX 模型拆包与并行下载",
+          detail: "我们把原版的 Tessera-small 和 CLIP 两个 ONNX 文件拆成 8 个分片，每片最多 16 MiB。浏览器从 CDN 同时下载最多 4 片，在内存里拼回两个原始模型。首次仍需下载约 115 MB，之后打开时可复用浏览器里的分片缓存。",
+        },
+        {
+          title: "描边修复与拖拽对比",
+          detail: "开启后会填补靠透明背景的外轮廓小缺口，保留原图像素和内部镂空。拖动滑块可以比较修复前后，复制和导出则按当前的修复开关取图。",
+        },
+        {
+          title: "本地生成历史",
+          detail: "提示词、生成时间和各个版本保存在当前浏览器的 IndexedDB 中。可以在历史抽屉里打开旧记录、切换版本、复制图片或下载 PNG，同时保留工作区正在编辑的结果。",
+        },
+        {
+          title: "工作区、明暗模式与双语界面",
+          detail: "桌面把预览和操作并排放，手机则上下排列。界面支持简体中文和英文，外观可以选浅色、深色或跟随系统。",
+        },
+        {
+          title: "Cloudflare 部署与加载恢复",
+          detail: "网页由 Cloudflare Pages 提供，模型分片由 CDN 分发。模型加载中断后，同一标签页下次打开会尝试逐片下载并切换到 CPU，以减轻内存压力。",
+        },
+      ],
     },
     aboutLocal: {
       title: "生成怎样在本机运行",
       device: "浏览器用 WebGPU 在本机 GPU 上运行 Tessera-small 和 CLIP 文本编码器，也可以通过 WebAssembly 用 CPU 生成。提示词、生成结果和 IndexedDB 历史都留在当前浏览器。",
-      cache: "首次访问需要并行下载约 115 MB 的模型权重。只要模型缓存还在，之后打开就能复用。",
     },
     original: "Hugging Face 上的原版 Slack Moji",
     model: "Jagrat Patel 的 Tessera-small",

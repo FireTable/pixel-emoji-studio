@@ -36,6 +36,8 @@ npm run dev
 
 将 `build/` 放到支持 HTTPS 的静态站点。线上版使用 Cloudflare Pages 托管页面，通过 FireTable CDN 分发模型。下载地址和分片大小在 [src/lib/client.js](src/lib/client.js) 中配置。自行镜像权重时，见 [英文部署说明](README.md#deployment)。
 
+中英文页面在构建时预渲染成 HTML。网页头部和 HTTP `Link` 响应头都指向对应语言的 Markdown 介绍和 [`llms.txt` 索引](https://emoji.firetable.tech/llms.txt)。Cloudflare Pages 的响应头配置见 [static/_headers](static/_headers)。
+
 ## 鸣谢
 
 - **Caleb Fahlgren** 制作了 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji)，导出了 ONNX 模型，并移植了前端采样代码。

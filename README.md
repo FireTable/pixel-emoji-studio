@@ -38,6 +38,8 @@ Serve `build/` from an HTTPS static host. The live site uses Cloudflare Pages fo
 
 To mirror the models, use the ONNX files from [upstream revision `8e8aecc`](https://huggingface.co/spaces/cfahlgren1/slack-moji/tree/8e8aecc55e855a51bb952c892efbef647c0ce372/static/models). Split each in order into 16 MiB pieces named `tessera_w8.1.bin` through `tessera_w8.4.bin` and `clip_text_w8.1.bin` through `clip_text_w8.4.bin`. Set `MODEL_URL` to the directory holding the files. If serving them from another origin, allow the site to fetch them with CORS. Change the cache name when changing the model release.
 
+Both language routes are prerendered as HTML. The HTML head and HTTP `Link` headers point to the corresponding Markdown overview and the [`llms.txt` index](https://emoji.firetable.tech/llms.txt). Cloudflare Pages serves the Markdown response headers from [static/_headers](static/_headers).
+
 ## Acknowledgements
 
 - **Caleb Fahlgren** created [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji), exported the ONNX models, and ported the sampler to JavaScript.

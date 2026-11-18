@@ -7,6 +7,8 @@
   import Seo from "$lib/Seo.svelte";
   import StudioToolbar from "$lib/StudioToolbar.svelte";
   import HistoryDrawer from "$lib/HistoryDrawer.svelte";
+  import PixelDecorations from "$lib/PixelDecorations.svelte";
+  import { dismissOnBackdrop } from "$lib/dismissOnBackdrop";
 
   let { locale }: { locale: Locale } = $props();
   const words = $derived(LOCALES[locale]);
@@ -253,6 +255,10 @@
     void reloadHistory();
   }
 
+  function closeAbout() {
+    aboutDialog?.close();
+  }
+
   function applyTheme(value: string | null, persist = false) {
     theme = value === "light" || value === "dark" ? value : "system";
     document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]')!.content =
@@ -340,6 +346,7 @@
 <Seo {locale} />
 
 <div class="site">
+<PixelDecorations />
 <StudioToolbar
   {locale}
   {theme}
@@ -485,10 +492,10 @@
 
 <HistoryDrawer bind:this={historyDrawer} {locale} entries={history} hasMore={historyHasMore} error={historyError} onMore={showOlder} />
 
-<dialog class="about-drawer" bind:this={aboutDialog} aria-labelledby="about-title">
+<dialog class="about-drawer" bind:this={aboutDialog} aria-labelledby="about-title" closedby="any" use:dismissOnBackdrop={closeAbout}>
   <div class="drawer-header">
     <h2 id="about-title">{words.about}</h2>
-    <button class="drawer-close" onclick={() => aboutDialog?.close()} aria-label={locale === "zh" ? "关闭" : "Close"}>
+    <button class="drawer-close" onclick={closeAbout} aria-label={locale === "zh" ? "关闭" : "Close"}>
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
     </button>
   </div>
@@ -504,13 +511,18 @@
     </section>
     <section>
       <h3>{words.aboutChanges.title}</h3>
-      <p>{words.aboutChanges.workflow}</p>
-      <p>{words.aboutChanges.site}</p>
+      <ul class="about-changes">
+        {#each words.aboutChanges.items as item (item.title)}
+          <li>
+            <strong>{item.title}</strong>
+            <p>{item.detail}</p>
+          </li>
+        {/each}
+      </ul>
     </section>
     <section>
       <h3>{words.aboutLocal.title}</h3>
       <p>{words.aboutLocal.device}</p>
-      <p>{words.aboutLocal.cache}</p>
     </section>
   </div>
 </dialog>
@@ -717,7 +729,6 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .spin { animation: none; }
-    .go, .bar i, .load-dialog, .load-dialog::backdrop, .about-drawer, .about-drawer::backdrop { transition: none; }
   }
   @keyframes spin {
     to {
@@ -828,6 +839,21 @@
     opacity: 1;
     transform: none;
   }
+  @supports (backdrop-filter: blur(1px)) {
+    .load-dialog {
+      background: linear-gradient(150deg, color-mix(in srgb, var(--surface) 95%, transparent), color-mix(in srgb, var(--surface) 86%, transparent));
+      border-color: color-mix(in srgb, var(--line) 65%, #fff);
+      backdrop-filter: blur(20px) saturate(135%);
+      box-shadow: 0 20px 80px #15102044, inset 0 1px 0 #fff6, inset 0 0 0 1px #fff1;
+    }
+    @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+      .load-dialog {
+        background: var(--surface);
+        backdrop-filter: none;
+        border-color: var(--line);
+      }
+    }
+  }
   .load-dialog:focus { outline: none; }
   .load-dialog::backdrop, .about-drawer::backdrop {
     opacity: 0;
@@ -883,12 +909,18 @@
   .drawer-body h3 { margin: 0 0 6px; color: var(--ink); font-size: 16px; }
   .drawer-body p { margin: 0; font-size: 14px; }
   .drawer-body p + p { margin-top: 9px; }
+  .about-changes { margin: 12px 0 0; padding-inline-start: 18px; }
+  .about-changes li + li { margin-top: 12px; }
+  .about-changes strong { display: block; margin-bottom: 2px; color: var(--ink); font-size: 14px; }
   .about-links { margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; }
   .about-links a { color: var(--accent); text-underline-offset: 3px; }
   @starting-style {
     .load-dialog[open] { opacity: 0; transform: translateY(8px) scale(.98); }
     .about-drawer[open] { opacity: 0; transform: translateX(24px); }
     .load-dialog[open]::backdrop, .about-drawer[open]::backdrop { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .go, .bar i, .load-dialog, .load-dialog::backdrop, .about-drawer, .about-drawer::backdrop { transition: none; }
   }
   @media (prefers-reduced-motion: no-preference) {
     .bob {

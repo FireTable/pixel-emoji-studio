@@ -1,5 +1,6 @@
 <script lang="ts">
   import { LOCALES, type Locale } from "./i18n";
+  import { dismissOnBackdrop } from "./dismissOnBackdrop";
   import type { HistoryEntry } from "./history";
 
   const GRID = 16;
@@ -126,6 +127,7 @@
   aria-labelledby="history-drawer-title"
   closedby="any"
   bind:this={drawer}
+  use:dismissOnBackdrop={close}
   oncancel={(event) => {
     event.preventDefault();
     void close();

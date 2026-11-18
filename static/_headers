@@ -1,0 +1,15 @@
+/
+  Link: </about.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"
+
+/zh/
+  Link: </zh/about.md>; rel="alternate"; type="text/markdown", </llms.txt>; rel="describedby"
+
+/about.md
+  Content-Type: text/markdown; charset=utf-8
+  Content-Language: en
+  Link: </>; rel="canonical", </llms.txt>; rel="describedby"
+
+/zh/about.md
+  Content-Type: text/markdown; charset=utf-8
+  Content-Language: zh-CN
+  Link: </zh/>; rel="canonical", </llms.txt>; rel="describedby"
