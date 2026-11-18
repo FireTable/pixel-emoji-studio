@@ -12,7 +12,7 @@ const FORCE_CPU_KEY = "slack-moji:force-cpu";
 // Set while the model loads into memory, cleared once it is ready. If it is still set on the next
 // visit, the browser killed the tab mid-load, almost always because it ran out of memory.
 const LOADING_KEY = "slack-moji:loading";
-const STEP_MS = 45; // show every step long enough to see the pixels fill in
+const PREVIEW_INTERVAL = 45;
 
 export const FILES = [
   { key: "den", name: "tessera_w8", bytes: 50840032 },
@@ -111,8 +111,6 @@ function rememberForceCpu() {
   }
 }
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
 /**
  * Download the models, start the worker, and resolve once it's ready. onProgress gets
  * { stage, loaded, total } where stage is "download", "load" (into memory) or "check" (GPU test).
@@ -189,24 +187,37 @@ class Client {
     this.nextId = 1;
   }
 
-  /** Generate n sprites; onStep(step, tokens, masked) is called for every step, paced for display. */
-  generate(prompt, { n = 4, seed = 0, onStep } = {}) {
+  /** Generate n sprites, showing only the latest preview when the browser paints. */
+  generate(prompt, { n = 4, seed = 0, onStep, previewInterval = PREVIEW_INTERVAL } = {}) {
     const id = this.nextId++;
     return new Promise((resolve, reject) => {
-      let chain = Promise.resolve();
-      let step = 0;
+      let preview;
+      let frame = 0;
+      let nextPaint = 0;
+
+      function paintPreview(time) {
+        if (time < nextPaint) {
+          frame = requestAnimationFrame(paintPreview);
+          return;
+        }
+        frame = 0;
+        nextPaint = time + previewInterval;
+        const { step, x, masked } = preview;
+        onStep(step, x, masked);
+      }
+
       this.worker.onmessage = (e) => {
         const m = e.data;
         if (m.id !== id) return;
         if (m.type === "step") {
-          const k = step++;
-          chain = chain.then(async () => {
-            const t = performance.now();
-            await onStep?.(k, m.x, m.masked);
-            await sleep(Math.max(0, STEP_MS - (performance.now() - t)));
-          });
-        } else if (m.type === "done") chain.then(() => resolve(m.x));
-        else if (m.type === "error") {
+          if (!onStep) return;
+          preview = m;
+          if (!frame) frame = requestAnimationFrame(paintPreview);
+        } else if (m.type === "done") {
+          cancelAnimationFrame(frame);
+          resolve(m.x);
+        } else if (m.type === "error") {
+          cancelAnimationFrame(frame);
           if (m.message !== BAD_OUTPUT) return reject(new Error(m.message));
           rememberForceCpu();
           reject(new Error("Your GPU returned broken numbers for this model. Reload the page and it will run on your CPU instead."));

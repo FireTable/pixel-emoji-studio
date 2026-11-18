@@ -1,4 +1,4 @@
-// Runs the model off the main thread so the page never freezes, on GPU or CPU.
+// Runs model inference off the main thread on GPU or CPU.
 import { createEngine } from "./engine.js";
 
 let engine = null;
@@ -18,9 +18,9 @@ self.onmessage = async (e) => {
       const x = await engine.generate(m.prompt, {
         n: m.n,
         seed: m.seed,
-        onStep: (_k, x, masked) => self.postMessage({ type: "step", id: m.id, x: x.slice(), masked: masked.slice() }),
+        onStep: (step, x, masked) => self.postMessage({ type: "step", id: m.id, step, x, masked }),
       });
-      self.postMessage({ type: "done", id: m.id, x: x.slice() });
+      self.postMessage({ type: "done", id: m.id, x }, [x.buffer]);
     }
   } catch (err) {
     self.postMessage({ type: "error", id: m.id, message: String(err?.message ?? err) });

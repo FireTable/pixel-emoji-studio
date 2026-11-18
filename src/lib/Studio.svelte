@@ -51,6 +51,7 @@
   let round = $state(1);
   let stopRequested = $state(false);
   const STEPS = 16;
+  const MOBILE_PREVIEW_INTERVAL = 120;
 
   let engine: any = $state(null);
   let seed = 1;
@@ -58,19 +59,20 @@
   const mb = (b: number) => Math.round(b / 1e6);
   const initialSprite = (index: number) => `/examples/${slug(EXAMPLES[0])}-${index}.png`;
 
-  // Draw a 16x16 sprite onto a canvas with crisp pixels.
+  let spriteContext: CanvasRenderingContext2D | undefined;
   function paint(canvas: HTMLCanvasElement | undefined, img: ImageData | null) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (!img) return;
-    const s = canvas.width / GRID;
-    for (let i = 0; i < N; i++) {
-      const a = img.data[i * 4 + 3];
-      if (!a) continue;
-      ctx.fillStyle = `rgba(${img.data[i * 4]},${img.data[i * 4 + 1]},${img.data[i * 4 + 2]},${a / 255})`;
-      ctx.fillRect((i % GRID) * s, Math.floor(i / GRID) * s, Math.ceil(s), Math.ceil(s));
+    if (!spriteContext) {
+      const source = document.createElement("canvas");
+      source.width = source.height = GRID;
+      spriteContext = source.getContext("2d")!;
     }
+    spriteContext.putImageData(img, 0, 0);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(spriteContext.canvas, 0, 0, canvas.width, canvas.height);
   }
 
   function pixelAction(canvas: HTMLCanvasElement, img: ImageData | null) {
@@ -85,6 +87,7 @@
     status = "working";
     copied = false;
     stopRequested = false;
+    const previewInterval = matchMedia("(max-width: 720px)").matches ? MOBILE_PREVIEW_INTERVAL : undefined;
     const t0 = performance.now();
     // The GPU makes all 4 in one batch (~1 s). The CPU makes them one after another (~10 s each),
     // so the first shows up quickly and the rest fill in while you look.
@@ -104,6 +107,7 @@
         const x = await engine.generate(clean, {
           n: perRun,
           seed,
+          previewInterval,
           onStep: (k: number, x: Int32Array, masked: Uint8Array) => {
             step = k + 1;
             sprites = [...done, ...toImages(x, masked), ...empty()].slice(0, VARIANTS);
@@ -458,7 +462,7 @@
           {#if showLoader}
             <span>{loaderTitle}</span>
           {:else if status === "working"}
-            <div class="bar"><i style="width:{(((round - 1) * STEPS + step) / ((engine?.device === "cpu" ? VARIANTS : 1) * STEPS)) * 100}%"></i></div>
+            <div class="bar"><i style:transform={`scaleX(${((round - 1) * STEPS + step) / ((engine?.device === "cpu" ? VARIANTS : 1) * STEPS)})`}></i></div>
             <span>
               {engine?.device === "cpu" ? words.progress(round, VARIANTS) : ""}{step === 0 ? words.reading : words.painting(step)}{engine?.device === "cpu" ? (stopRequested ? words.stopping : words.cpuProgress) : ""}
             </span>
@@ -547,6 +551,10 @@
 <style>
   :global(*) {
     box-sizing: border-box;
+  }
+  @supports (scrollbar-gutter: stable) {
+    :global(html) { scrollbar-gutter: stable; }
+    :global(html:has(.load-dialog:modal)) { overflow: hidden; }
   }
   :global(body) {
     margin: 0;
@@ -812,7 +820,8 @@
     display: block;
     height: 100%;
     background: var(--accent);
-    transition: width 0.2s;
+    transform-origin: left center;
+    transition: transform 0.2s;
   }
   .load-dialog {
     width: min(350px, calc(100% - 32px));
@@ -839,6 +848,7 @@
     opacity: 1;
     transform: none;
   }
+  .load-dialog:modal { overscroll-behavior: contain; }
   @supports (backdrop-filter: blur(1px)) {
     .load-dialog {
       background:
@@ -864,7 +874,11 @@
     opacity: 0;
     transition: opacity 220ms, display 220ms allow-discrete, overlay 220ms allow-discrete;
   }
-  .load-dialog::backdrop { background: #19122457; }
+  .load-dialog::backdrop {
+    background: #19122457;
+    overflow: hidden;
+    overscroll-behavior: contain;
+  }
   .about-drawer::backdrop {
     background: #19122470;
     backdrop-filter: blur(6px);
