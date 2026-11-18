@@ -3,7 +3,13 @@
 <p align="center"><b>输入一句描述，在自己的浏览器里生成像素表情。</b></p>
 <p align="center"><a href="https://emoji.firetable.tech"><b>在线体验</b></a> · <a href="README.md">English</a> · 简体中文</p>
 
-Emoji Studio 是 FireTable 基于 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 做的非商业改版。输入文字后，Tessera-small 会生成四张 16×16 表情。可以预览聊天效果、复制图片或导出 PNG，也可以打开描边修复。
+Emoji Studio 是 FireTable 基于 [Slack Moji](https://huggingface.co/spaces/cfahlgren1/slack-moji) 做的非商业改版。输入文字后，Tessera-small 会生成四张 16×16 表情。可以预览聊天效果、复制图片或导出 PNG，也可以打开描边修复，拖动滑块对比前后效果。
+
+## 截图
+
+![Emoji Studio 桌面版的火焰描边对比](screenshots/desktop.png)
+
+[移动端深色模式](screenshots/mobile.png)
 
 ## 工作方式
 
@@ -11,11 +17,15 @@ Emoji Studio 是 FireTable 基于 [Slack Moji](https://huggingface.co/spaces/cfa
 - **并行下载**。两个 INT8 ONNX 权重约 115 MB，拆成八个最大 16 MiB 的分片，最多同时下四个。浏览器按偏移拼回模型，检查分片长度后写入缓存。浏览器清理缓存或存储空间不足时，可能重新下载。
 - **修复描边**。开关默认关闭。打开后，外露的彩色边缘会补一格深色像素，保留原有像素和封闭的透明孔。预览、复制与导出都会应用当前设置。
 
+- **IndexedDB 历史**。生成完成后，提示词和结果保存在当前浏览器。在历史抽屉中展开一条记录，可以独立预览、复制或导出。
+- **显示设置**。中英文共用同一套推理与历史。主题支持跟随系统、浅色、深色，会在绘制页面前生效。
+- **加载恢复**。如果上次初始化中断，同一标签页再次打开时会自动尝试单片下载和 CPU 推理。
+
 ## 本地开发
 
 ```sh
-git clone https://github.com/FireTable/emoji.git
-cd emoji
+git clone https://github.com/FireTable/emoji-studio.git
+cd emoji-studio
 npm ci
 npm run dev
 ```
@@ -33,7 +43,7 @@ npm run dev
 - **Angais** 发布了 Tessera 使用的训练集 [Pixel Art Atlas 1.4M](https://huggingface.co/datasets/Angais/pixel-art-atlas-1.4m)。
 - **OpenAI** 发布了 [CLIP ViT-B/32](https://huggingface.co/openai/clip-vit-base-patch32) 文本编码器。**ONNX Runtime Web** 提供了 [浏览器推理运行时](https://onnxruntime.ai/docs/tutorials/web/)。
 
-FireTable 修改了页面样式，加入描边修复，并在 Cloudflare 上实现了并行下载与缓存。
+FireTable 修改了页面样式，加入描边修复、历史和双语外观设置，并在 Cloudflare 上实现了并行下载与缓存。
 
 ## 许可
 

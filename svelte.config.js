@@ -6,6 +6,5 @@ export default {
   kit: {
     adapter: adapter({ pages: "build", assets: "build", fallback: undefined }),
     paths: { relative: true },
-    router: { type: "hash" },
   },
 };

@@ -64,11 +64,11 @@ async function downloadShard(file, index, out, cache, signal, onBytes) {
   }
 }
 
-async function fetchBytes(file, cache, signal, onBytes) {
+async function fetchBytes(file, cache, signal, onBytes, batch = SHARDS_PER_BATCH) {
   const out = new Uint8Array(file.bytes);
   const parts = Array.from({ length: Math.ceil(file.bytes / SHARD_BYTES) }, (_, index) => index);
-  for (let i = 0; i < parts.length; i += SHARDS_PER_BATCH) {
-    await Promise.all(parts.slice(i, i + SHARDS_PER_BATCH).map((part) =>
+  for (let i = 0; i < parts.length; i += batch) {
+    await Promise.all(parts.slice(i, i + batch).map((part) =>
       downloadShard(file, part, out, cache, signal, onBytes),
     ));
   }
@@ -84,22 +84,23 @@ function shouldForceCpu() {
   }
 }
 
-function setLoadingMarker(on) {
+function setLoadingMarker(mode) {
   try {
-    if (on) localStorage.setItem(LOADING_KEY, "1");
-    else localStorage.removeItem(LOADING_KEY);
-  } catch {
-    // Storage blocked: we just can't detect a crash on the next visit.
-  }
+    if (mode) sessionStorage.setItem(LOADING_KEY, mode);
+    else sessionStorage.removeItem(LOADING_KEY);
+  } catch {}
 }
 
-/** True if the last visit was killed while loading the model, so we shouldn't retry on our own. */
-export function crashedLastTime() {
+export function previousLoad() {
   try {
-    return localStorage.getItem(LOADING_KEY) === "1";
-  } catch {
-    return false;
-  }
+    const mode = sessionStorage.getItem(LOADING_KEY);
+    if (mode) return mode;
+    if (localStorage.getItem(LOADING_KEY)) {
+      localStorage.removeItem(LOADING_KEY);
+      return "standard";
+    }
+  } catch {}
+  return null;
 }
 
 function rememberForceCpu() {
@@ -116,7 +117,16 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
  * Download the models, start the worker, and resolve once it's ready. onProgress gets
  * { stage, loaded, total } where stage is "download", "load" (into memory) or "check" (GPU test).
  */
-export async function loadEngine(onProgress) {
+export async function loadEngine(onProgress, { recovery = false } = {}) {
+  setLoadingMarker(recovery ? "recovery" : "standard");
+  try {
+    return await startEngine(onProgress, recovery);
+  } finally {
+    setLoadingMarker(null);
+  }
+}
+
+async function startEngine(onProgress, recovery) {
   const cache = await openCache();
   const controller = new AbortController();
   const total = FILES.reduce((sum, file) => sum + file.bytes, 0);
@@ -125,13 +135,23 @@ export async function loadEngine(onProgress) {
     loaded += bytes;
     onProgress?.({ stage: "download", loaded, total });
   };
+  async function downloadModels() {
+    if (!recovery) {
+      return Promise.all(FILES.map((file) => fetchBytes(file, cache, controller.signal, onBytes)));
+    }
+    const models = [];
+    for (const file of FILES) {
+      models.push(await fetchBytes(file, cache, controller.signal, onBytes, 1));
+    }
+    return models;
+  }
   const [tokJson, meta, selfTest, [den, clip]] = await Promise.all([
     ...["tokenizer.json", "meta.json", "selftest.json"].map(async (name) => {
-      const response = await fetch(`models/${name}`, { signal: controller.signal });
+      const response = await fetch(`/models/${name}`, { signal: controller.signal });
       if (!response.ok) throw new Error(`Couldn't load ${name} (HTTP ${response.status}).`);
       return response.json();
     }),
-    Promise.all(FILES.map((file) => fetchBytes(file, cache, controller.signal, onBytes))),
+    downloadModels(),
   ]).catch((error) => {
     controller.abort();
     throw error;
@@ -147,18 +167,14 @@ export async function loadEngine(onProgress) {
       else if (e.data.type === "error") reject(new Error(e.data.message));
     };
     worker.onerror = (e) => reject(new Error(e.message || "The model worker failed to start"));
-    worker.postMessage({ type: "init", bytes: { den, clip }, tokJson, palette, selfTest, forceCpu: shouldForceCpu() }, [den, clip]);
+    worker.postMessage({ type: "init", bytes: { den, clip }, tokJson, palette, selfTest, forceCpu: recovery || shouldForceCpu() }, [den, clip]);
   });
-  // Only a killed tab leaves the marker behind: a normal error still clears it.
-  setLoadingMarker(true);
   let device, fallbackReason;
   try {
     ({ device, fallbackReason } = await started);
   } catch (error) {
     worker.terminate();
     throw error;
-  } finally {
-    setLoadingMarker(false);
   }
   if (fallbackReason === "gpu-bad-output") rememberForceCpu();
   return new Client(worker, palette, device, fallbackReason);

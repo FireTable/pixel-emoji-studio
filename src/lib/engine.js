@@ -95,8 +95,12 @@ export async function createEngine(bytes, tokJson, palette, selfTestRef, { force
       extra: { optimization: { disable_specified_optimizers: "ConstantFolding" } },
     };
     const den = await ort.InferenceSession.create(bytes.den, opts);
-    const clip = await ort.InferenceSession.create(bytes.clip, opts);
-    return [den, clip];
+    try {
+      return [den, await ort.InferenceSession.create(bytes.clip, opts)];
+    } catch (error) {
+      await den.release().catch(() => {});
+      throw error;
+    }
   };
   const onCpu = async (fallbackReason) => {
     const [den, clip] = await create("wasm");

@@ -1,10 +1,61 @@
 <!doctype html>
-<html lang="en">
+<html lang="%emoji.lang%" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Emoji Studio | FireTable</title>
-    <meta name="description" content="Make pixel emoji with Tessera, right in your browser." />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      try {
+        const theme = localStorage.getItem("emoji-studio:theme");
+        if (theme === "light" || theme === "dark") {
+          document.querySelector('meta[name="color-scheme"]').content = theme;
+        }
+      } catch {}
+    </script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #faf8f4;
+        --ink: #1d1b28;
+        --muted: #625e70;
+        --accent: #4c37c7;
+        --tint: #f0ecff;
+        --line: #e6e1ed;
+        --surface: #fff;
+        --soft: #f3f1f7;
+        --checker: #f0ecf9;
+        --on-accent: #fff;
+        --shadow: #32226911;
+        --reaction: #e6f1fd;
+        --reaction-text: #1d5fa8;
+        --reaction-line: #2d78bf;
+        --disabled: #b4afc0;
+        --danger: #9d283e;
+        background-color: var(--bg);
+      }
+      :root:has(> head > meta[name="color-scheme"][content="light"]) { color-scheme: light; }
+      :root:has(> head > meta[name="color-scheme"][content="dark"]) { color-scheme: dark; }
+      @supports (color: light-dark(#fff, #000)) {
+        :root {
+          --bg: light-dark(#faf8f4, #17151d);
+          --ink: light-dark(#1d1b28, #f3f0fa);
+          --muted: light-dark(#625e70, #bfb8ce);
+          --accent: light-dark(#4c37c7, #b6a7ff);
+          --tint: light-dark(#f0ecff, #322753);
+          --line: light-dark(#e6e1ed, #42394f);
+          --surface: light-dark(#fff, #24202c);
+          --soft: light-dark(#f3f1f7, #302938);
+          --checker: light-dark(#eee8f8, #332b43);
+          --on-accent: light-dark(#fff, #211642);
+          --shadow: light-dark(#32226911, #0004);
+          --reaction: light-dark(#e6f1fd, #263a58);
+          --reaction-text: light-dark(#1d5fa8, #bedbff);
+          --reaction-line: light-dark(#2d78bf, #7499d0);
+          --disabled: light-dark(#b4afc0, #5b526b);
+          --danger: light-dark(#9d283e, #ffabbc);
+        }
+      }
+    </style>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😎</text></svg>" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
