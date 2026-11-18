@@ -841,10 +841,15 @@
   }
   @supports (backdrop-filter: blur(1px)) {
     .load-dialog {
-      background: linear-gradient(150deg, color-mix(in srgb, var(--surface) 95%, transparent), color-mix(in srgb, var(--surface) 86%, transparent));
-      border-color: color-mix(in srgb, var(--line) 65%, #fff);
-      backdrop-filter: blur(20px) saturate(135%);
-      box-shadow: 0 20px 80px #15102044, inset 0 1px 0 #fff6, inset 0 0 0 1px #fff1;
+      background:
+        radial-gradient(ellipse at 15% 0%, #fff2, transparent 58%),
+        linear-gradient(150deg, color-mix(in srgb, var(--surface) 69%, transparent), color-mix(in srgb, var(--surface) 51%, transparent));
+      border-color: #fff5;
+      backdrop-filter: blur(13px) saturate(145%);
+      box-shadow: 0 20px 68px #1510204d, inset 0 1px 1px #fff8, inset 0 -1px 1px #fff2;
+    }
+    .load-dialog .muted {
+      color: color-mix(in srgb, var(--ink) 76%, var(--muted));
     }
     @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
       .load-dialog {
@@ -857,9 +862,12 @@
   .load-dialog:focus { outline: none; }
   .load-dialog::backdrop, .about-drawer::backdrop {
     opacity: 0;
+    transition: opacity 220ms, display 220ms allow-discrete, overlay 220ms allow-discrete;
+  }
+  .load-dialog::backdrop { background: #19122457; }
+  .about-drawer::backdrop {
     background: #19122470;
     backdrop-filter: blur(6px);
-    transition: opacity 220ms, display 220ms allow-discrete, overlay 220ms allow-discrete;
   }
   .load-dialog[open]::backdrop, .about-drawer[open]::backdrop { opacity: 1; }
   .load-art { flex: 0 0 80px; }
