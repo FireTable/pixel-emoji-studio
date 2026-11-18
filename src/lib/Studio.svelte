@@ -708,6 +708,15 @@
     font: 500 22px/1.2 Inter, sans-serif;
     color: var(--ink);
   }
+  @supports selector(.input:has(> input:focus-visible)) {
+    .input:has(> input:focus-visible) {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .input > input:focus-visible {
+      outline: none;
+    }
+  }
   .go {
     flex: none;
     width: 50px;
